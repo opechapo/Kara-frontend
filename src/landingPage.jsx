@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { FaShoppingCart } from 'react-icons/fa';
-import Header from './Layouts/Header';
-import Footer from './Layouts/Footer';
-import Categories5 from './assets/Categories5.png';
-import Categories2 from './assets/Categories2.png';
-import Categories3 from './assets/Categories3.png';
-import Categories4 from './assets/Categories4.png';
-import Categories1 from './assets/Categories1.png';
-import KaraLoader2 from './assets/KaraLoader2.png';
-import { useAuth } from './Context/AuthContext';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { FaShoppingCart } from "react-icons/fa";
+import Header from "./Layouts/Header";
+import Footer from "./Layouts/Footer";
+import Categories5 from "./assets/Categories5.png";
+import Categories2 from "./assets/Categories2.png";
+import Categories3 from "./assets/Categories3.png";
+import Categories4 from "./assets/Categories4.png";
+import Categories1 from "./assets/Categories1.png";
+import KaraLoader2 from "./assets/KaraLoader2.png";
+import { useAuth } from "./Context/AuthContext";
 
 // Define category routes (same as Header.jsx)
 const categoryLinks = [
-  { name: 'Electronics', link: '/electronics' },
-  { name: 'Fashion', link: '/fashion' },
-  { name: 'Home & Garden', link: '/homeandgarden' },
-  { name: 'Smartphones & Tablets', link: '/smartphonestabs' },
-  { name: 'Vehicles', link: '/vehicles' },
+  { name: "Electronics", link: "/electronics" },
+  { name: "Fashion", link: "/fashion" },
+  { name: "Home & Garden", link: "/homeandgarden" },
+  { name: "Smartphones & Tablets", link: "/smartphonestabs" },
+  { name: "Vehicles", link: "/vehicles" },
 ];
 
 const LandingPage = () => {
@@ -27,7 +27,7 @@ const LandingPage = () => {
   const [latestProducts, setLatestProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [homeGardenItems, setHomeGardenItems] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const [clickedItems, setClickedItems] = useState({});
@@ -36,58 +36,58 @@ const LandingPage = () => {
   const [homeGardenIndex, setHomeGardenIndex] = useState(0);
   const { fetchCartCount, fetchNotificationCount } = useAuth();
 
-  const API_BASE_URL = 'http://localhost:3000';
+  const API_BASE_URL = "http://localhost:3000";
   const POLLING_INTERVAL = 30000;
 
   const getImageUrl = (path) => {
     const fallbackImage =
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==';
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==";
     return path ? `${API_BASE_URL}${path}` : fallbackImage;
   };
 
   const fetchUserProfile = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) return;
     try {
       const response = await fetch(`${API_BASE_URL}/user/profile`, {
         headers: { Authorization: `Bearer ${token}` },
-        credentials: 'include',
+        credentials: "include",
       });
       const data = await response.json();
       if (response.ok && data._id) {
         setUserId(data._id);
       } else {
-        console.warn('Failed to fetch user profile:', data.error);
+        console.warn("Failed to fetch user profile:", data.error);
       }
     } catch (err) {
-      console.error('User profile fetch error:', err.message);
+      console.error("User profile fetch error:", err.message);
     }
   };
 
   const fetchStores = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const response = await fetch(`${API_BASE_URL}/stores/public/all`, {
         headers,
-        credentials: 'include',
+        credentials: "include",
       });
       const data = await response.json();
       if (data.success) {
         setStores(data.data || []);
       } else {
-        console.warn('Stores fetch failed:', data.error);
+        console.warn("Stores fetch failed:", data.error);
         setStores([]);
       }
     } catch (err) {
-      console.error('Stores fetch error:', err.message);
+      console.error("Stores fetch error:", err.message);
       setStores([]);
     }
   };
 
   const fetchData = async () => {
     setIsLoading(true);
-    setError('');
+    setError("");
 
     const fetchWithRetry = async (url, retries = 3, timeout = 30000) => {
       for (let i = 0; i < retries; i++) {
@@ -95,7 +95,7 @@ const LandingPage = () => {
         const timeoutId = setTimeout(() => controller.abort(), timeout);
         try {
           const response = await fetch(url, {
-            credentials: 'include',
+            credentials: "include",
             signal: controller.signal,
           });
           clearTimeout(timeoutId);
@@ -105,7 +105,7 @@ const LandingPage = () => {
           return await response.json();
         } catch (err) {
           clearTimeout(timeoutId);
-          if (err.name === 'AbortError') {
+          if (err.name === "AbortError") {
             console.warn(`Fetch aborted for ${url}, retry ${i + 1}/${retries}`);
           } else {
             console.error(`Fetch error for ${url}:`, err.message);
@@ -113,7 +113,9 @@ const LandingPage = () => {
           if (i === retries - 1) {
             throw err;
           }
-          await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, i)));
+          await new Promise((resolve) =>
+            setTimeout(resolve, 1000 * Math.pow(2, i))
+          );
         }
       }
     };
@@ -123,56 +125,68 @@ const LandingPage = () => {
       await fetchStores();
 
       try {
-        const latestProductsData = await fetchWithRetry(`${API_BASE_URL}/products/public/latest`);
+        const latestProductsData = await fetchWithRetry(
+          `${API_BASE_URL}/products/public/latest`
+        );
         if (latestProductsData.success) {
           setLatestProducts(latestProductsData.data || []);
         } else {
-          console.warn('Latest Products fetch failed:', latestProductsData.error);
+          console.warn(
+            "Latest Products fetch failed:",
+            latestProductsData.error
+          );
           setLatestProducts([]);
         }
       } catch (err) {
-        console.error('Latest Products fetch error:', err.message);
+        console.error("Latest Products fetch error:", err.message);
         setLatestProducts([]);
       }
 
       try {
-        const categoriesData = await fetchWithRetry(`${API_BASE_URL}/api/categories`);
+        const categoriesData = await fetchWithRetry(
+          `${API_BASE_URL}/api/categories`
+        );
         if (categoriesData.success) {
-          const mappedCategories = (categoriesData.data || []).map((category, index) => {
-            const matchedCategory =
-              categoryLinks.find((c) => c.name.toLowerCase() === category.name?.toLowerCase()) ||
-              categoryLinks[index % categoryLinks.length];
-            return {
-              ...category,
-              link: matchedCategory.link,
-            };
-          });
+          const mappedCategories = (categoriesData.data || []).map(
+            (category, index) => {
+              const matchedCategory =
+                categoryLinks.find(
+                  (c) => c.name.toLowerCase() === category.name?.toLowerCase()
+                ) || categoryLinks[index % categoryLinks.length];
+              return {
+                ...category,
+                link: matchedCategory.link,
+              };
+            }
+          );
           setCategories(mappedCategories);
         } else {
-          console.warn('Categories fetch failed:', categoriesData.error);
+          console.warn("Categories fetch failed:", categoriesData.error);
           setCategories([]);
         }
       } catch (err) {
-        console.error('Categories fetch error:', err.message);
+        console.error("Categories fetch error:", err.message);
         setCategories([]);
       }
 
       try {
         const homeGardenData = await fetchWithRetry(
-          `${API_BASE_URL}/products/public?category=${encodeURIComponent('Homes & Gardens')}`
+          `${API_BASE_URL}/products/public?category=${encodeURIComponent(
+            "Homes & Gardens"
+          )}`
         );
         if (homeGardenData.success) {
           setHomeGardenItems(homeGardenData.data || []);
         } else {
-          console.warn('Home & Garden fetch failed:', homeGardenData.error);
+          console.warn("Home & Garden fetch failed:", homeGardenData.error);
           setHomeGardenItems([]);
         }
       } catch (err) {
-        console.error('Home & Garden fetch error:', err.message);
+        console.error("Home & Garden fetch error:", err.message);
         setHomeGardenItems([]);
       }
     } catch (error) {
-      console.error('Fetch error:', error.message);
+      console.error("Fetch error:", error.message);
       setError(`Failed to load data: ${error.message}`);
     } finally {
       setIsLoading(false);
@@ -180,30 +194,31 @@ const LandingPage = () => {
   };
 
   const addToCart = async (productId) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet to add items to cart.');
+      setError("Please connect your wallet to add items to cart.");
       return;
     }
     try {
       const response = await fetch(`${API_BASE_URL}/cart/add`, {
-        method: 'POST',
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify({ productId, quantity: 1 }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to add to cart');
+      if (!response.ok)
+        throw new Error(data.message || "Failed to add to cart");
       setClickedItems((prev) => ({ ...prev, [productId]: true }));
       setTimeout(() => {
         setClickedItems((prev) => ({ ...prev, [productId]: false }));
       }, 1000);
       fetchCartCount(true);
       fetchNotificationCount(true);
-      alert('Item added to cart!');
+      alert("Item added to cart!");
     } catch (err) {
       setError(err.message);
     }
@@ -232,21 +247,35 @@ const LandingPage = () => {
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? stores.length - 1 : prevIndex - 1));
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? stores.length - 1 : prevIndex - 1
+    );
   };
 
   const handleSectionPrev = (section, setIndex, items) => {
-    setIndex((prevIndex) => (prevIndex === 0 ? Math.max(items.length - 5, 0) : prevIndex - 1));
+    setIndex((prevIndex) =>
+      prevIndex === 0 ? Math.max(items.length - 5, 0) : prevIndex - 1
+    );
   };
 
   const handleSectionNext = (section, setIndex, items) => {
-    setIndex((prevIndex) => (prevIndex >= items.length - 5 ? 0 : prevIndex + 1));
+    setIndex((prevIndex) =>
+      prevIndex >= items.length - 5 ? 0 : prevIndex + 1
+    );
   };
 
-  const categoryBanners = [Categories5, Categories4, Categories3, Categories2, Categories1];
+  const categoryBanners = [
+    Categories5,
+    Categories4,
+    Categories3,
+    Categories2,
+    Categories1,
+  ];
 
   if (error)
-    return <div className="text-red-500 p-6 w-full text-center text-lg">{error}</div>;
+    return (
+      <div className="text-red-500 p-6 w-full text-center text-lg">{error}</div>
+    );
   if (isLoading) {
     return (
       <div className="p-6 w-full flex justify-center items-center min-h-screen">
@@ -267,15 +296,20 @@ const LandingPage = () => {
         <section className="relative w-full h-screen">
           <img
             src={getImageUrl(stores[currentIndex]?.bannerImage)}
-            alt={stores[currentIndex]?.name || 'Store'}
+            alt={stores[currentIndex]?.name || "Store"}
             className="w-full h-full object-cover"
             onError={(e) => {
               e.target.src = getImageUrl(null);
-              console.error('Image load error for store:', stores[currentIndex]);
+              console.error(
+                "Image load error for store:",
+                stores[currentIndex]
+              );
             }}
           />
           <div className="absolute bottom-20 left-16 text-left text-white">
-            <p className="text-4xl font-bold drop-shadow-lg">{stores[currentIndex]?.name || 'Store'}</p>
+            <p className="text-4xl font-bold drop-shadow-lg">
+              {stores[currentIndex]?.name || "Store"}
+            </p>
             {userId && stores[currentIndex]?.owner?._id === userId ? (
               <p className="mt-4 text-lg text-gray-200">This is your store</p>
             ) : (
@@ -302,25 +336,35 @@ const LandingPage = () => {
         </section>
       ) : (
         <section className="relative w-full h-screen flex items-center justify-center bg-gray-100">
-          <p className="text-gray-600 text-xl">No stores available to display.</p>
+          <p className="text-gray-600 text-xl">
+            No stores available to display.
+          </p>
         </section>
       )}
       {/* New Arrivals Section */}
       <section className="container mx-auto my-12 px-6">
-        <h2 className="text-3xl font-bold text-left text-gray-800 mb-6">New Arrivals</h2>
+        <h2 className="text-3xl font-bold text-left text-gray-800 mb-6">
+          New Arrivals
+        </h2>
         <div className="relative">
           <div
             className="flex overflow-x-auto space-x-6 pb-4 cursor-pointer custom-scrollbar"
-            style={{ scrollBehavior: 'smooth', transform: `translateX(-${newArrivalsIndex * 266}px)` }}
+            style={{
+              scrollBehavior: "smooth",
+              transform: `translateX(-${newArrivalsIndex * 266}px)`,
+            }}
           >
             {latestProducts.length > 0 ? (
               latestProducts.slice(0, 5).map((item) => (
                 <div key={item._id} className="min-w-[250px]">
-                  <Link to={`/product/${item._id}`} className="hover:scale-105 transition-transform">
+                  <Link
+                    to={`/product/${item._id}`}
+                    className="hover:scale-105 transition-transform"
+                  >
                     <div className="w-60 h-60 bg-gray-100 rounded-lg overflow-hidden">
                       <img
                         src={getImageUrl(item.generalImage)}
-                        alt={item.name || 'Product image'}
+                        alt={item.name || "Product image"}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -330,14 +374,16 @@ const LandingPage = () => {
                       <p className="text-sm font-semibold text-gray-900">
                         {item.price} {item.paymentToken}
                       </p>
-                      <p className="text-lg text-gray-600 truncate">{item.name}</p>
+                      <p className="text-lg text-gray-600 truncate">
+                        {item.name}
+                      </p>
                     </div>
                     <button
                       onClick={() => addToCart(item._id)}
                       className={`p-2 rounded-full transition-colors ${
                         clickedItems[item._id]
-                          ? 'text-purple-500'
-                          : 'text-purple-300 hover:text-purple-700'
+                          ? "text-purple-500"
+                          : "text-purple-300 hover:text-purple-700"
                       }`}
                       title="Add to Cart"
                     >
@@ -353,13 +399,25 @@ const LandingPage = () => {
           {latestProducts.length > 5 && (
             <>
               <button
-                onClick={() => handleSectionPrev('newArrivals', setNewArrivalsIndex, latestProducts)}
+                onClick={() =>
+                  handleSectionPrev(
+                    "newArrivals",
+                    setNewArrivalsIndex,
+                    latestProducts
+                  )
+                }
                 className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-purple-300 bg-opacity-50 p-2 rounded-full cursor-pointer text-white hover:bg-purple-500 hover:bg-opacity-70 transition"
               >
                 <IoIosArrowBack size={30} />
               </button>
               <button
-                onClick={() => handleSectionNext('newArrivals', setNewArrivalsIndex, latestProducts)}
+                onClick={() =>
+                  handleSectionNext(
+                    "newArrivals",
+                    setNewArrivalsIndex,
+                    latestProducts
+                  )
+                }
                 className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-purple-300 bg-opacity-50 p-2 rounded-full cursor-pointer text-white hover:bg-purple-500 hover:bg-opacity-70 transition"
               >
                 <IoIosArrowForward size={30} />
@@ -370,11 +428,16 @@ const LandingPage = () => {
       </section>
       {/* Categories Section */}
       <section className="container mx-auto my-12 px-6">
-        <h2 className="text-3xl font-bold text-left text-gray-800 mb-6">Categories</h2>
+        <h2 className="text-3xl font-bold text-left text-gray-800 mb-6">
+          Categories
+        </h2>
         <div className="relative">
           <div
             className="flex overflow-x-auto space-x-6 pb-4 cursor-pointer custom-scrollbar"
-            style={{ scrollBehavior: 'smooth', transform: `translateX(-${categoriesIndex * 266}px)` }}
+            style={{
+              scrollBehavior: "smooth",
+              transform: `translateX(-${categoriesIndex * 266}px)`,
+            }}
           >
             {categories.length > 0 ? (
               categories.map((category, index) => (
@@ -392,7 +455,9 @@ const LandingPage = () => {
                       />
                     </div>
                     <div className="bg-white p-4 shadow-md rounded-lg mt-2">
-                      <p className="text-lg font-semibold text-gray-900">{category.name}</p>
+                      <p className="text-lg font-semibold text-gray-900">
+                        {category.name}
+                      </p>
                     </div>
                   </div>
                 </Link>
@@ -404,13 +469,25 @@ const LandingPage = () => {
           {categories.length > 5 && (
             <>
               <button
-                onClick={() => handleSectionPrev('categories', setCategoriesIndex, categories)}
+                onClick={() =>
+                  handleSectionPrev(
+                    "categories",
+                    setCategoriesIndex,
+                    categories
+                  )
+                }
                 className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-purple-300 bg-opacity-50 p-2 rounded-full cursor-pointer text-white hover:bg-purple-500 hover:bg-opacity-70 transition"
               >
                 <IoIosArrowBack size={30} />
               </button>
               <button
-                onClick={() => handleSectionNext('categories', setCategoriesIndex, categories)}
+                onClick={() =>
+                  handleSectionNext(
+                    "categories",
+                    setCategoriesIndex,
+                    categories
+                  )
+                }
                 className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-purple-300 bg-opacity-50 p-2 rounded-full cursor-pointer text-white hover:bg-purple-500 hover:bg-opacity-70 transition"
               >
                 <IoIosArrowForward size={30} />
@@ -421,16 +498,24 @@ const LandingPage = () => {
       </section>
       {/* Homes & Gardens Section */}
       <section className="container mx-auto my-12 px-6">
-        <h2 className="text-3xl font-bold text-left text-gray-800 mb-6">Homes & Gardens</h2>
+        <h2 className="text-3xl font-bold text-left text-gray-800 mb-6">
+          Homes & Gardens
+        </h2>
         <div className="relative">
           <div
             className="flex overflow-x-auto space-x-6 pb-4 cursor-pointer custom-scrollbar"
-            style={{ scrollBehavior: 'smooth', transform: `translateX(-${homeGardenIndex * 266}px)` }}
+            style={{
+              scrollBehavior: "smooth",
+              transform: `translateX(-${homeGardenIndex * 266}px)`,
+            }}
           >
             {homeGardenItems.length > 0 ? (
               homeGardenItems.slice(0, 5).map((item) => (
                 <div key={item._id} className="min-w-[250px]">
-                  <Link to={`/product/${item._id}`} className="hover:scale-105 transition-transform">
+                  <Link
+                    to={`/product/${item._id}`}
+                    className="hover:scale-105 transition-transform"
+                  >
                     <div className="w-60 h-60 bg-gray-100 rounded-lg overflow-hidden">
                       <img
                         src={getImageUrl(item.generalImage)}
@@ -450,8 +535,8 @@ const LandingPage = () => {
                       onClick={() => addToCart(item._id)}
                       className={`p-2 rounded-full transition-colors ${
                         clickedItems[item._id]
-                          ? 'text-purple-500'
-                          : 'text-purple-300 hover:text-purple-700'
+                          ? "text-purple-500"
+                          : "text-purple-300 hover:text-purple-700"
                       }`}
                       title="Add to Cart"
                     >
@@ -461,19 +546,33 @@ const LandingPage = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-600">No Homes & Gardens items available</p>
+              <p className="text-gray-600">
+                No Homes & Gardens items available
+              </p>
             )}
           </div>
           {homeGardenItems.length > 5 && (
             <>
               <button
-                onClick={() => handleSectionPrev('homeGarden', setHomeGardenIndex, homeGardenItems)}
+                onClick={() =>
+                  handleSectionPrev(
+                    "homeGarden",
+                    setHomeGardenIndex,
+                    homeGardenItems
+                  )
+                }
                 className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-purple-300 bg-opacity-50 p-2 rounded-full cursor-pointer text-white hover:bg-purple-500 hover:bg-opacity-70 transition"
               >
                 <IoIosArrowBack size={30} />
               </button>
               <button
-                onClick={() => handleSectionNext('homeGarden', setHomeGardenIndex, homeGardenItems)}
+                onClick={() =>
+                  handleSectionNext(
+                    "homeGarden",
+                    setHomeGardenIndex,
+                    homeGardenItems
+                  )
+                }
                 className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-purple-300 bg-opacity-50 p-2 rounded-full cursor-pointer text-white hover:bg-purple-500 hover:bg-opacity-70 transition"
               >
                 <IoIosArrowForward size={30} />
