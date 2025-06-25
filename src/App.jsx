@@ -37,7 +37,7 @@ import Logout from "./Components/LogOut";
 import Store from "./Components/Store";
 import AllMyStores from "./Components/AllMyStores";
 import UpdateStore from "./Components/UpdateStore";
-import CreateStore from "./Components/createStore";
+import CreateStore from "./Components/CreateStore";
 import CreateCollection from "./Components/CreateCollection";
 import CreateProduct from "./Components/CreateProduct";
 import MyCollections from "./Components/MyCollections";
