@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Header from '../Layouts/Header';
-import Footer from '../Layouts/Footer';
-import { FaArrowLeft } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Header from "../Layouts/Header.jsx";
+import Footer from "../Layouts/Footer.jsx";
+import { FaArrowLeft } from "react-icons/fa";
 
 const UpdateProduct = () => {
   const { productId } = useParams(); // Get product ID from URL
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    shortDescription: '',
-    price: '',
-    amount: '',
-    category: '',
-    paymentToken: '',
-    storeId: '',
-    collection: '',
-    escrowSystem: 'Deposit',
-    vendorDeposit: '',
-    customerDeposit: '',
+    name: "",
+    shortDescription: "",
+    price: "",
+    amount: "",
+    category: "",
+    paymentToken: "",
+    storeId: "",
+    collection: "",
+    escrowSystem: "Deposit",
+    vendorDeposit: "",
+    customerDeposit: "",
     generalImage: null,
   });
   const [collections, setCollections] = useState([]);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -31,18 +31,22 @@ const UpdateProduct = () => {
   }, [productId]);
 
   const fetchProductData = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet.');
+      setError("Please connect your wallet.");
       return;
     }
     try {
-      const response = await fetch(`http://localhost:3000/products/${productId}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `http://localhost:3000/products/${productId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to fetch product');
+      if (!response.ok)
+        throw new Error(data.message || "Failed to fetch product");
       setFormData({
         name: data.name,
         shortDescription: data.shortDescription,
@@ -51,76 +55,85 @@ const UpdateProduct = () => {
         category: data.category,
         paymentToken: data.paymentToken,
         storeId: data.storeId,
-        collection: data.collection?._id || '',
+        collection: data.collection?._id || "",
         escrowSystem: data.escrowSystem,
-        vendorDeposit: data.vendorDeposit || '',
-        customerDeposit: data.customerDeposit || '',
+        vendorDeposit: data.vendorDeposit || "",
+        customerDeposit: data.customerDeposit || "",
         generalImage: null, // File input starts empty; existing image is kept unless updated
       });
       fetchCollections(data.storeId);
     } catch (err) {
-      console.error('Fetch product error:', err.message);
+      console.error("Fetch product error:", err.message);
       setError(err.message);
     }
   };
 
   const fetchCollections = async (storeId) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`http://localhost:3000/collections/store/${storeId}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `http://localhost:3000/collections/store/${storeId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to fetch collections');
+      if (!response.ok)
+        throw new Error(data.message || "Failed to fetch collections");
       setCollections(data);
     } catch (err) {
-      console.error('Fetch collections error:', err.message);
+      console.error("Fetch collections error:", err.message);
       setError(err.message);
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
-    setFormData(prev => ({ ...prev, generalImage: e.target.files[0] }));
+    setFormData((prev) => ({ ...prev, generalImage: e.target.files[0] }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet.');
+      setError("Please connect your wallet.");
       setLoading(false);
       return;
     }
 
     const form = new FormData();
     for (const key in formData) {
-      if (key !== 'generalImage') form.append(key, formData[key]);
+      if (key !== "generalImage") form.append(key, formData[key]);
     }
-    if (formData.generalImage) form.append('generalImage', formData.generalImage);
+    if (formData.generalImage)
+      form.append("generalImage", formData.generalImage);
 
     try {
-      const response = await fetch(`http://localhost:3000/products/${productId}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-        body: form,
-      });
+      const response = await fetch(
+        `http://localhost:3000/products/${productId}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+          body: form,
+        }
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to update product');
-      setSuccess('Product updated successfully!');
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update product");
+      setSuccess("Product updated successfully!");
       setTimeout(() => navigate(`/product/${productId}`), 2000);
     } catch (err) {
-      console.error('Update product error:', err.message);
+      console.error("Update product error:", err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -136,12 +149,17 @@ const UpdateProduct = () => {
       <Header />
       <div className="min-h-screen flex flex-col relative">
         <div className="absolute top-16 left-0 pl-4 z-[60]">
-          <button onClick={handleBack} className="text-gray-700 hover:text-purple-900 text-2xl p-2 rounded-full">
+          <button
+            onClick={handleBack}
+            className="text-gray-700 hover:text-purple-900 text-2xl p-2 rounded-full"
+          >
             <FaArrowLeft />
           </button>
         </div>
         <div className="max-w-md mx-auto mt-20 p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Update Product</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+            Update Product
+          </h2>
           {error && <p className="text-red-500 mb-4">{error}</p>}
           {success && <p className="text-green-500 mb-4">{success}</p>}
           {loading && <p className="text-gray-600 mb-4">Updating product...</p>}
@@ -234,7 +252,7 @@ const UpdateProduct = () => {
                 required
               >
                 <option value="">Select Collection</option>
-                {collections.map(collection => (
+                {collections.map((collection) => (
                   <option key={collection._id} value={collection._id}>
                     {collection.name}
                   </option>
@@ -254,7 +272,7 @@ const UpdateProduct = () => {
                 <option value="Guarantor">Guarantor</option>
               </select>
             </div>
-            {formData.escrowSystem === 'Deposit' && (
+            {formData.escrowSystem === "Deposit" && (
               <>
                 <div>
                   <label className="block text-gray-700">Vendor Deposit</label>
@@ -270,7 +288,9 @@ const UpdateProduct = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700">Customer Deposit</label>
+                  <label className="block text-gray-700">
+                    Customer Deposit
+                  </label>
                   <input
                     type="number"
                     name="customerDeposit"
@@ -285,7 +305,9 @@ const UpdateProduct = () => {
               </>
             )}
             <div>
-              <label className="block text-gray-700">General Image (optional)</label>
+              <label className="block text-gray-700">
+                General Image (optional)
+              </label>
               <input
                 type="file"
                 name="generalImage"
@@ -299,7 +321,7 @@ const UpdateProduct = () => {
               className="w-full bg-purple-900 text-white p-2 rounded hover:bg-purple-700 disabled:bg-gray-400"
               disabled={loading}
             >
-              {loading ? 'Updating...' : 'Update Product'}
+              {loading ? "Updating..." : "Update Product"}
             </button>
           </form>
         </div>

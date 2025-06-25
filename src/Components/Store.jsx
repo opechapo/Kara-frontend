@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import Header from '../Layouts/Header';
-import Footer from '../Layouts/Footer';
-import { FaEllipsisV, FaArrowLeft } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import Header from "../Layouts/Header";
+import Footer from "../Layouts/Footer";
+import { FaEllipsisV, FaArrowLeft } from "react-icons/fa";
 
 const Store = () => {
   const { id } = useParams();
@@ -10,14 +10,18 @@ const Store = () => {
   const [store, setStore] = useState(null);
   const [products, setProducts] = useState([]);
   const [collections, setCollections] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [closeTimeout, setCloseTimeout] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
-  const [imageErrors, setImageErrors] = useState({ banner: false, logo: false, products: {} });
+  const [imageErrors, setImageErrors] = useState({
+    banner: false,
+    logo: false,
+    products: {},
+  });
 
   useEffect(() => {
-    console.log('Store ID:', id);
+    console.log("Store ID:", id);
     fetchStore();
     fetchProducts();
     fetchCollections();
@@ -25,90 +29,104 @@ const Store = () => {
   }, [id]);
 
   const checkOwnership = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      console.log('No token found, user not authenticated');
+      console.log("No token found, user not authenticated");
       return;
     }
     try {
-      const userResponse = await fetch('http://localhost:3000/user/profile', {
+      const userResponse = await fetch("http://localhost:3000/user/profile", {
         headers: { Authorization: `Bearer ${token}` },
-        credentials: 'include',
+        credentials: "include",
       });
       if (!userResponse.ok) {
-        throw new Error('Failed to fetch user profile');
+        throw new Error("Failed to fetch user profile");
       }
       const userData = await userResponse.json();
       const userId = userData.data?._id;
       if (!userId) {
-        throw new Error('User ID not found in profile response');
+        throw new Error("User ID not found in profile response");
       }
 
-      const storeResponse = await fetch(`http://localhost:3000/stores/public/${id}`, {
-        credentials: 'include',
-      });
+      const storeResponse = await fetch(
+        `http://localhost:3000/stores/public/${id}`,
+        {
+          credentials: "include",
+        }
+      );
       if (!storeResponse.ok) {
-        throw new Error('Failed to fetch store data');
+        throw new Error("Failed to fetch store data");
       }
       const storeData = await storeResponse.json();
       const storeOwnerId = storeData.data?.owner?._id;
 
       if (storeOwnerId && userId === storeOwnerId) {
-        console.log('User is the store owner');
+        console.log("User is the store owner");
         setIsOwner(true);
       } else {
-        console.log('User is not the store owner');
+        console.log("User is not the store owner");
       }
     } catch (err) {
-      console.error('Ownership check error:', err.message);
+      console.error("Ownership check error:", err.message);
       setIsOwner(false);
     }
   };
 
   const fetchStore = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/stores/public/${id}`, {
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `http://localhost:3000/stores/public/${id}`,
+        {
+          credentials: "include",
+        }
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to fetch store');
+      if (!response.ok) throw new Error(data.error || "Failed to fetch store");
       setStore(data.data);
     } catch (err) {
-      console.error('Store fetch error:', err.message);
+      console.error("Store fetch error:", err.message);
       setError(err.message);
     }
   };
 
   const fetchProducts = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const response = await fetch(`http://localhost:3000/products?storeId=${id}`, {
-        headers,
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `http://localhost:3000/products?storeId=${id}`,
+        {
+          headers,
+          credentials: "include",
+        }
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to fetch products');
+      if (!response.ok)
+        throw new Error(data.error || "Failed to fetch products");
       setProducts(data.data || []);
     } catch (err) {
-      console.error('Products fetch error:', err.message);
+      console.error("Products fetch error:", err.message);
       setError(err.message);
     }
   };
 
   const fetchCollections = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const response = await fetch(`http://localhost:3000/collections/store/${id}`, {
-        headers,
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `http://localhost:3000/collections/store/${id}`,
+        {
+          headers,
+          credentials: "include",
+        }
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to fetch collections');
+      if (!response.ok)
+        throw new Error(data.error || "Failed to fetch collections");
       setCollections(data.data || []);
     } catch (err) {
-      console.error('Collections fetch error:', err.message);
+      console.error("Collections fetch error:", err.message);
       setError(err.message);
     }
   };
@@ -129,11 +147,11 @@ const Store = () => {
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) {
-      return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==';
+      return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==";
     }
-    const baseUrl = 'http://localhost:3000';
+    const baseUrl = "http://localhost:3000";
     // Normalize path to lowercase /uploads/ and encode
-    const normalizedPath = imagePath.toLowerCase().startsWith('/uploads/')
+    const normalizedPath = imagePath.toLowerCase().startsWith("/uploads/")
       ? imagePath.toLowerCase()
       : `/uploads/${imagePath}`;
     return `${baseUrl}${encodeURI(normalizedPath)}`;
@@ -220,10 +238,13 @@ const Store = () => {
                   className="w-full h-full object-cover"
                   crossOrigin="anonymous"
                   onError={(e) => {
-                    console.error('Store banner image load error:', store.bannerImage);
+                    console.error(
+                      "Store banner image load error:",
+                      store.bannerImage
+                    );
                     e.target.src = getImageUrl(null);
-                    e.target.alt = 'Banner image not available';
-                    handleImageError('banner');
+                    e.target.alt = "Banner image not available";
+                    handleImageError("banner");
                   }}
                 />
               ) : (
@@ -239,10 +260,10 @@ const Store = () => {
                     className="w-44 h-44 rounded-full border-4 border-white object-cover"
                     crossOrigin="anonymous"
                     onError={(e) => {
-                      console.error('Store logo image load error:', store.logo);
+                      console.error("Store logo image load error:", store.logo);
                       e.target.src = getImageUrl(null);
-                      e.target.alt = 'Logo image not available';
-                      handleImageError('logo');
+                      e.target.alt = "Logo image not available";
+                      handleImageError("logo");
                     }}
                   />
                 ) : (
@@ -254,7 +275,9 @@ const Store = () => {
             </div>
 
             <div className="max-w-5xl mx-auto mt-24 p-6">
-              <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">{store.name}</h2>
+              <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                {store.name}
+              </h2>
               <div className="mb-6">
                 <ul className="text-gray-700 space-y-2 flex justify-between gap-10">
                   <li>
@@ -269,31 +292,41 @@ const Store = () => {
                 </ul>
               </div>
               <div className="mb-10">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Description:</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Description:
+                </h3>
                 <p className="text-gray-600">{store.description}</p>
               </div>
               <div className="mb-10">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Collections</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Collections
+                </h3>
                 {collections.length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     {collections.map((collection) => (
                       <div
                         key={collection._id}
                         className="cursor-pointer group"
-                        onClick={() => navigate(`/collections/${collection._id}`)}
+                        onClick={() =>
+                          navigate(`/collections/${collection._id}`)
+                        }
                       >
                         <div className="flex flex-col items-center">
-                          {collection.generalImage && !imageErrors.products[collection._id] ? (
+                          {collection.generalImage &&
+                          !imageErrors.products[collection._id] ? (
                             <img
                               src={getImageUrl(collection.generalImage)}
                               alt={`${collection.name} Image`}
                               className="w-24 h-24 object-cover rounded-md transition-transform group-hover:scale-105"
                               crossOrigin="anonymous"
                               onError={(e) => {
-                                console.error('Collection image load error:', collection.generalImage);
+                                console.error(
+                                  "Collection image load error:",
+                                  collection.generalImage
+                                );
                                 e.target.src = getImageUrl(null);
-                                e.target.alt = 'Collection image not available';
-                                handleImageError('collection', collection._id);
+                                e.target.alt = "Collection image not available";
+                                handleImageError("collection", collection._id);
                               }}
                             />
                           ) : (
@@ -313,7 +346,9 @@ const Store = () => {
                 )}
               </div>
               <div className="mb-20">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Products</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Products
+                </h3>
                 {products.length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     {products.map((product) => (
@@ -323,17 +358,21 @@ const Store = () => {
                         onClick={() => navigate(`/product/${product._id}`)}
                       >
                         <div className="flex flex-col items-center">
-                          {product.generalImage && !imageErrors.products[product._id] ? (
+                          {product.generalImage &&
+                          !imageErrors.products[product._id] ? (
                             <img
                               src={getImageUrl(product.generalImage)}
                               alt={product.name}
                               className="w-24 h-24 object-cover rounded-md transition-transform group-hover:scale-105 mb-2"
                               crossOrigin="anonymous"
                               onError={(e) => {
-                                console.error('Product image load error:', product.generalImage);
+                                console.error(
+                                  "Product image load error:",
+                                  product.generalImage
+                                );
                                 e.target.src = getImageUrl(null);
-                                e.target.alt = 'Product image not available';
-                                handleImageError('product', product._id);
+                                e.target.alt = "Product image not available";
+                                handleImageError("product", product._id);
                               }}
                             />
                           ) : (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from "../Layouts/Header";
-import Footer from "../Layouts/Footer";
+import Header from "../Layouts/Header.jsx";
+import Footer from "../Layouts/Footer.jsx";
 import { FaArrowLeft } from "react-icons/fa";
 
 const UpdateStore = () => {

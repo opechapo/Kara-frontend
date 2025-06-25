@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Header from '../Layouts/Header';
-import Footer from '../Layouts/Footer';
-import { FaArrowLeft, FaSpinner } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Header from "../Layouts/Header.jsx";
+import Footer from "../Layouts/Footer.jsx";
+import { FaArrowLeft, FaSpinner } from "react-icons/fa";
 
 const UpdateCollection = () => {
   const { collectionId } = useParams();
   const navigate = useNavigate();
   const [collectionData, setCollectionData] = useState({
-    name: '',
-    shortDescription: '',
-    store: '',
-    description: '',
+    name: "",
+    shortDescription: "",
+    store: "",
+    description: "",
     generalImage: null,
   });
   const [stores, setStores] = useState([]);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,63 +25,66 @@ const UpdateCollection = () => {
   }, [collectionId]);
 
   const fetchCollection = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet.');
+      setError("Please connect your wallet.");
       setLoading(false);
       return;
     }
     try {
-      const response = await fetch(`http://localhost:3000/collections/${collectionId}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `http://localhost:3000/collections/${collectionId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       const text = await response.text();
-      console.log('UpdateCollection: Fetch collection raw response:', text);
+      console.log("UpdateCollection: Fetch collection raw response:", text);
       const data = JSON.parse(text);
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch collection');
+        throw new Error(data.message || "Failed to fetch collection");
       }
       const collection = data.data; // Access normalized data field
       setCollectionData({
-        name: collection.name || '',
-        shortDescription: collection.shortDescription || '',
-        store: collection.store?._id || '',
-        description: collection.description || '',
+        name: collection.name || "",
+        shortDescription: collection.shortDescription || "",
+        store: collection.store?._id || "",
+        description: collection.description || "",
         generalImage: null,
       });
       setLoading(false);
     } catch (err) {
-      console.error('UpdateCollection: Fetch collection error:', err.message);
+      console.error("UpdateCollection: Fetch collection error:", err.message);
       setError(err.message);
       setLoading(false);
     }
   };
 
   const fetchStores = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet.');
+      setError("Please connect your wallet.");
       return;
     }
     try {
-      const response = await fetch('http://localhost:3000/stores', {
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
+      const response = await fetch("http://localhost:3000/stores", {
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       const text = await response.text();
-      console.log('UpdateCollection: Fetch stores raw response:', text);
+      console.log("UpdateCollection: Fetch stores raw response:", text);
       const data = JSON.parse(text);
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch stores');
+        throw new Error(data.message || "Failed to fetch stores");
       }
       const storesData = data.data; // Access normalized data field
       if (!Array.isArray(storesData)) {
-        throw new Error('Stores data is not an array');
+        throw new Error("Stores data is not an array");
       }
       setStores(storesData);
     } catch (err) {
-      console.error('UpdateCollection: Fetch stores error:', err.message);
+      console.error("UpdateCollection: Fetch stores error:", err.message);
       setError(err.message);
       setStores([]);
     }
@@ -99,60 +102,68 @@ const UpdateCollection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('name', collectionData.name);
-    formData.append('shortDescription', collectionData.shortDescription);
-    formData.append('store', collectionData.store);
-    formData.append('description', collectionData.description);
-    if (collectionData.generalImage) formData.append('generalImage', collectionData.generalImage);
+    formData.append("name", collectionData.name);
+    formData.append("shortDescription", collectionData.shortDescription);
+    formData.append("store", collectionData.store);
+    formData.append("description", collectionData.description);
+    if (collectionData.generalImage)
+      formData.append("generalImage", collectionData.generalImage);
 
     try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('Please connect your wallet.');
-      const response = await fetch(`http://localhost:3000/collections/${collectionId}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-        body: formData,
-      });
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Please connect your wallet.");
+      const response = await fetch(
+        `http://localhost:3000/collections/${collectionId}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+          body: formData,
+        }
+      );
       const text = await response.text();
-      console.log('UpdateCollection: Update response:', text);
+      console.log("UpdateCollection: Update response:", text);
       if (!response.ok) {
         const errorData = JSON.parse(text);
-        throw new Error(errorData.message || 'Failed to update collection');
+        throw new Error(errorData.message || "Failed to update collection");
       }
-      setSuccess('Collection updated successfully!');
-      setError('');
+      setSuccess("Collection updated successfully!");
+      setError("");
       setTimeout(() => navigate(`/collections/${collectionId}`), 2000);
     } catch (err) {
-      console.error('UpdateCollection: Submit error:', err.message);
+      console.error("UpdateCollection: Submit error:", err.message);
       setError(err.message);
-      setSuccess('');
+      setSuccess("");
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this collection?')) return;
+    if (!window.confirm("Are you sure you want to delete this collection?"))
+      return;
     try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('Please connect your wallet.');
-      const response = await fetch(`http://localhost:3000/collections/${collectionId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Please connect your wallet.");
+      const response = await fetch(
+        `http://localhost:3000/collections/${collectionId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       const text = await response.text();
-      console.log('UpdateCollection: Delete response:', text);
+      console.log("UpdateCollection: Delete response:", text);
       if (!response.ok) {
         const errorData = JSON.parse(text);
-        throw new Error(errorData.message || 'Failed to delete collection');
+        throw new Error(errorData.message || "Failed to delete collection");
       }
-      setSuccess('Collection deleted successfully!');
-      setError('');
-      setTimeout(() => navigate('/profile'), 2000);
+      setSuccess("Collection deleted successfully!");
+      setError("");
+      setTimeout(() => navigate("/profile"), 2000);
     } catch (err) {
-      console.error('UpdateCollection: Delete error:', err.message);
+      console.error("UpdateCollection: Delete error:", err.message);
       setError(err.message);
-      setSuccess('');
+      setSuccess("");
     }
   };
 
@@ -169,7 +180,9 @@ const UpdateCollection = () => {
         </button>
       </div>
       <div className="flex-1 p-10 max-w-6xl mx-auto bg-gray-50 rounded-xl shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Update Collection</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">
+          Update Collection
+        </h1>
         {error && <div className="text-red-500 mb-8">{error}</div>}
         {success && <div className="text-green-500 mb-8">{success}</div>}
         {loading ? (
@@ -236,7 +249,8 @@ const UpdateCollection = () => {
                 rows="6"
               />
               <p className="text-sm text-gray-500 mt-2">
-                The description will be included on the collection's detail page. Markdown syntax is supported.
+                The description will be included on the collection's detail
+                page. Markdown syntax is supported.
               </p>
             </div>
             <div className="mb-8">

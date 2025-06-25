@@ -5,8 +5,8 @@ import { IoMdNotifications, IoMdCart } from "react-icons/io";
 import { FaBars, FaUser, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import karaLogo1 from "../assets/KaraLogo1.png";
 import { debounce } from "lodash";
-import { ConnectWallet } from "../Components/ConnectWallet";
-import { useAuth } from "../context/AuthContext";
+import { ConnectWallet } from "../Components/ConnectWallet.jsx";
+import { useAuth } from "../Context/AuthContext.jsx";
 
 // Define category routes (same as LandingPage.jsx)
 const categoryLinks = [
