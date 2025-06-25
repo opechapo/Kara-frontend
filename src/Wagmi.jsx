@@ -10,7 +10,7 @@ import { useAccount, useDisconnect, WagmiProvider } from "wagmi";
 import { baseSepolia } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SiweMessage } from "siwe";
-import { fetchWithRetry } from "./utils/api";
+import { fetchWithRetry } from "./Utils/api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./Context/AuthContext";
 
@@ -20,9 +20,8 @@ const InnerWagmiConfig = ({ children }) => {
   const navigate = useNavigate();
   const { setIsAuthenticated, setToken, setWalletAddress, nonce, fetchNonce } =
     useAuth();
-  const [walletAuthStatus, setWalletAuthStatus] = React.useState(
-    "unauthenticated",
-  );
+  const [walletAuthStatus, setWalletAuthStatus] =
+    React.useState("unauthenticated");
   const [errorMessage, setErrorMessage] = React.useState("");
 
   const handleVerify = async ({ message, signature }) => {
@@ -31,7 +30,7 @@ const InnerWagmiConfig = ({ children }) => {
         "Verifying with message:",
         message,
         "and signature:",
-        signature,
+        signature
       );
       const connectResponse = await fetchWithRetry(
         "http://localhost:3000/user/connect-wallet",
@@ -43,7 +42,7 @@ const InnerWagmiConfig = ({ children }) => {
             signature,
             message,
           }),
-        },
+        }
       );
 
       const data = await connectResponse.json();
@@ -140,14 +139,14 @@ const InnerWagmiConfig = ({ children }) => {
   React.useEffect(() => {
     console.log(
       "Authentication adapter initialized, walletAuthStatus:",
-      walletAuthStatus,
+      walletAuthStatus
     );
   }, [walletAuthStatus]);
 
   return (
     <RainbowKitAuthenticationProvider
-      // adapter={authenticationAdapter}
-      // status={walletAuthStatus}
+    // adapter={authenticationAdapter}
+    // status={walletAuthStatus}
     >
       <RainbowKitProvider modalSize="compact">
         {children}
@@ -162,8 +161,8 @@ const InnerWagmiConfig = ({ children }) => {
 };
 
 export const WagmiConfigProvider = ({ children }) => {
-  const appId = import.meta.env.REOWN_PROJECT_ID ||
-    "b972d173034ec0a0cb6cf40713015942";
+  const appId =
+    import.meta.env.REOWN_PROJECT_ID || "b972d173034ec0a0cb6cf40713015942";
 
   if (!appId) {
     console.warn("Project ID not found");
