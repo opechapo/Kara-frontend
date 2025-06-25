@@ -10,7 +10,7 @@ import roverLogo from "../../../assets/roverLogo.png";
 import mercedesGwagon from "../../../assets/mercedesGwagon.png";
 import toyotaYaris from "../../../assets/toyotaYaris.png";
 import landRover from "../../../assets/landRover.png";
-import lexusJeep from "../../../assets/LexusJeep.png";
+import lexusJeep from "../../../assets/lexusJeep.png";
 import toyotaCivic from "../../../assets/toyotaCivic.png";
 import teslaModel from "../../../assets/tesla.png";
 
