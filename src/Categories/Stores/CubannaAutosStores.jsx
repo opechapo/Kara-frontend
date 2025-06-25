@@ -5,7 +5,7 @@ import Footer from "../../Layouts/Footer";
 import CubannaBackground from "../../assets/CubannaBackground.png";
 import CubannaDisplayPicture from "../../assets/CubannaDisplayPicture.png";
 import mercedesGwagon from "../../assets/mercedesGwagon.png";
-import lexusJeep from "../../assets/lexusJeep.png";
+import lexusJeep from "../../assets/LexusJeep.png";
 
 const Cubannaautoscars = [
   {
