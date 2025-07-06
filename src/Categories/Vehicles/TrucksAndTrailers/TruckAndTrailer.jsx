@@ -4,7 +4,7 @@ import Header from "../../../Layouts/Header";
 import CarsCategorySideBar from "../../../Layouts/Pages/CarsCategorySideBar";
 import CategorySideBar from "../../../Layouts/CategorySideBar";
 import Footer from "../../../Layouts/Footer";
-import toyotaLogo from "../../../assets/ToyotaLogo.png";
+import toyotaLogo from "../../../assets/toyotaLogo.png";
 import manLogo from "../../../assets/manLogo.png";
 import mackLogo from "../../../assets/mackLogo.png";
 import toyotaTrailer from "../../../assets/toyotaTrailer.webp";
