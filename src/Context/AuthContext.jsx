@@ -24,16 +24,16 @@ export const AuthProvider = ({ children }) => {
   const { disconnect } = useDisconnect();
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(localStorage.getItem("token")),
+    Boolean(localStorage.getItem("token"))
   );
   const [isAdmin, setIsAdmin] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [walletAddress, setWalletAddress] = useState("");
   const [cartCount, setCartCount] = useState(
-    Number(localStorage.getItem("cartCount")) || 0,
+    Number(localStorage.getItem("cartCount")) || 0
   );
   const [notificationCount, setNotificationCount] = useState(
-    Number(localStorage.getItem("notificationCount")) || 0,
+    Number(localStorage.getItem("notificationCount")) || 0
   );
   const [nonce, setNonce] = useState(null);
 
@@ -49,7 +49,6 @@ export const AuthProvider = ({ children }) => {
 
   const fetchNonce = useCallback(async (walletAddress, force = false) => {
     // if (!walletAddress) return null;
-
     // const cacheKey = `nonce_${walletAddress}`;
     // if (
     //   !force &&
@@ -59,7 +58,6 @@ export const AuthProvider = ({ children }) => {
     //   setNonce(cache[cacheKey]);
     //   return cache[cacheKey];
     // }
-
     // try {
     //   console.log(`Fetching nonce for address: ${walletAddress}`);
     //   const response = await fetch(
@@ -99,8 +97,8 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/user/profile",
-        { method: "GET" },
+        "https://kara-backend-1.onrender.com/user/profile",
+        { method: "GET" }
       );
       const data = await response.json();
 
@@ -138,7 +136,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/cart", {
+      const response = await fetch("https://kara-backend-1.onrender.com/cart", {
         method: "GET",
       });
       const data = await response.json();
@@ -177,8 +175,8 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/notifications/count",
-        { method: "GET" },
+        "https://kara-backend-1.onrender.com/notifications/count",
+        { method: "GET" }
       );
       const data = await response.json();
 

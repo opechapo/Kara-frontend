@@ -57,10 +57,13 @@ const Header = () => {
   // Fetch categories
   const fetchCategories = useCallback(async (force = false) => {
     try {
-      const response = await fetch("http://localhost:3000/api/categories", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/api/categories",
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       const data = await response.json();
       if (!data.success)
         throw new Error(data.error || "Failed to fetch categories");

@@ -33,7 +33,7 @@ const InnerWagmiConfig = ({ children }) => {
         signature
       );
       const connectResponse = await fetchWithRetry(
-        "http://localhost:3000/user/connect-wallet",
+        "https://kara-backend-1.onrender.com/user/connect-wallet",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

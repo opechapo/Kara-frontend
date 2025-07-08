@@ -1,72 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Header from '../Layouts/Header';
-import Footer from '../Layouts/Footer';
-import { FaSpinner } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Header from "../Layouts/Header";
+import Footer from "../Layouts/Footer";
+import { FaSpinner } from "react-icons/fa";
 
 const MyProducts = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const getImageUrl = (path) => {
-    const baseUrl = 'http://localhost:3000';
-    const fallbackImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==';
+    const baseUrl = "https://kara-backend-1.onrender.com";
+    const fallbackImage =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==";
     return path ? `${baseUrl}${path}` : fallbackImage;
   };
 
   const fetchProducts = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet to view your products.');
+      setError("Please connect your wallet to view your products.");
       setIsLoading(false);
       return;
     }
     try {
-      const headers = { 'Authorization': `Bearer ${token}` };
-      const response = await fetch('http://localhost:3000/products/user', { headers, credentials: 'include' });
+      const headers = { Authorization: `Bearer ${token}` };
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/products/user",
+        { headers, credentials: "include" }
+      );
       const productsData = await response.json();
-      if (!response.ok) throw new Error(productsData.message || 'Failed to fetch products');
+      if (!response.ok)
+        throw new Error(productsData.message || "Failed to fetch products");
       setProducts(productsData);
       setIsLoading(false);
     } catch (err) {
-      console.error('MyProducts: Fetch error:', err.message);
+      console.error("MyProducts: Fetch error:", err.message);
       setError(err.message);
       setIsLoading(false);
     }
   };
 
   const handleDelete = async (productId) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet.');
+      setError("Please connect your wallet.");
       return;
     }
     try {
-      const response = await fetch(`http://localhost:3000/products/${productId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `https://kara-backend-1.onrender.com/products/${productId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       if (!response.ok) {
         const text = await response.text();
         let message;
         try {
           const data = JSON.parse(text);
-          message = data.message || 'Failed to delete product';
+          message = data.message || "Failed to delete product";
         } catch {
-          message = 'Server returned an unexpected response';
+          message = "Server returned an unexpected response";
         }
         throw new Error(message);
       }
       const data = await response.json();
-      setProducts(products.filter(product => product._id !== productId));
-      alert(data.message || 'Product deleted successfully!');
+      setProducts(products.filter((product) => product._id !== productId));
+      alert(data.message || "Product deleted successfully!");
     } catch (err) {
-      console.error('Delete product error:', err.message);
+      console.error("Delete product error:", err.message);
       setError(err.message);
     }
   };
@@ -86,18 +95,23 @@ const MyProducts = () => {
 
   return (
     <>
-      <Header /> 
+      <Header />
       <div className="min-h-screen p-6 max-w-5xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">My Products</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          My Products
+        </h2>
         {products.length > 0 ? (
           <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product) => (
               <div key={product._id} className="flex flex-col items-center">
-                <Link to={`/product/${product._id}`} className="cursor-pointer group">
+                <Link
+                  to={`/product/${product._id}`}
+                  className="cursor-pointer group"
+                >
                   <div className="w-40 h-40 bg-gray-100 rounded-md overflow-hidden transition-transform group-hover:scale-105">
                     <img
                       src={getImageUrl(product.generalImage)}
-                      alt={product.name || 'Product image'}
+                      alt={product.name || "Product image"}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.src = getImageUrl(null);

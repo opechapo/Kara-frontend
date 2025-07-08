@@ -54,10 +54,10 @@ const Product = () => {
     }
     try {
       console.log("Fetching product with ID:", productId);
-      const headers = { "Authorization": `Bearer ${token}` };
+      const headers = { Authorization: `Bearer ${token}` };
       const response = await fetch(
-        `http://localhost:3000/products/${productId}`,
-        { headers, credentials: "include" },
+        `https://kara-backend-1.onrender.com/products/${productId}`,
+        { headers, credentials: "include" }
       );
       console.log("Fetch product response status:", response.status);
       const text = await response.text();
@@ -70,7 +70,7 @@ const Product = () => {
       }
       if (!response.ok) {
         throw new Error(
-          data.error || `Failed to fetch product: ${response.status}`,
+          data.error || `Failed to fetch product: ${response.status}`
         );
       }
       if (!data.success || !data.data) {
@@ -90,22 +90,26 @@ const Product = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      const response = await fetch(`http://localhost:3000/escrow/user`, {
-        headers: { "Authorization": `Bearer ${token}` },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `https://kara-backend-1.onrender.com/escrow/user`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       const text = await response.text();
       console.log("Escrow transactions raw response:", text);
       if (!response.ok) {
         throw new Error(
-          `HTTP error! Status: ${response.status}, Response: ${text}`,
+          `HTTP error! Status: ${response.status}, Response: ${text}`
         );
       }
       const data = JSON.parse(text);
       const productTransactions = data.data.filter(
         (tx) =>
-          tx.productId?._id && tx.productId._id.toString() === productId &&
-          tx.status !== "held",
+          tx.productId?._id &&
+          tx.productId._id.toString() === productId &&
+          tx.status !== "held"
       );
       setEscrowTransactions(productTransactions);
     } catch (err) {
@@ -118,11 +122,11 @@ const Product = () => {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `http://localhost:3000/chat/product/${productId}`,
+        `https://kara-backend-1.onrender.com/chat/product/${productId}`,
         {
-          headers: { "Authorization": `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` },
           credentials: "include",
-        },
+        }
       );
       const data = await response.json();
       if (!response.ok) {
@@ -137,15 +141,18 @@ const Product = () => {
   const sendMessage = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("http://localhost:3000/chat/send", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ productId, message: newMessage }),
-      });
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/chat/send",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ productId, message: newMessage }),
+        }
+      );
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Failed to send message");
@@ -164,15 +171,18 @@ const Product = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3000/cart/add", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ productId, quantity }),
-      });
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/cart/add",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ productId, quantity }),
+        }
+      );
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Failed to add to cart");
@@ -202,26 +212,29 @@ const Product = () => {
       const signer = ethersProvider.getSigner();
 
       console.log("Creating escrow record on backend...");
-      const response = await fetch("http://localhost:3000/escrow/create", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          productId: product._id,
-          amount: product.price * quantity,
-          paymentToken: product.paymentToken,
-          quantity,
-        }),
-      });
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/escrow/create",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            productId: product._id,
+            amount: product.price * quantity,
+            paymentToken: product.paymentToken,
+            quantity,
+          }),
+        }
+      );
       const text = await response.text();
       console.log("Escrow create raw response:", text);
       if (!response.ok) {
         setIsInitiatingEscrow(false);
         throw new Error(
-          `HTTP error! Status: ${response.status}, Response: ${text}`,
+          `HTTP error! Status: ${response.status}, Response: ${text}`
         );
       }
       const data = JSON.parse(text);
@@ -257,14 +270,14 @@ const Product = () => {
       const EscrowFactory = new ethers.ContractFactory(
         EscrowArtifact.abi,
         EscrowArtifact.data.bytecode,
-        signer,
+        signer
       );
       const escrowContract = await EscrowFactory.deploy(
         product.owner.walletAddress,
         {
           value: valueInWei,
           gasLimit: 3000000,
-        },
+        }
       );
       await escrowContract.deployed();
 
@@ -273,11 +286,11 @@ const Product = () => {
 
       console.log("Updating backend with contract address...");
       const updateResponse = await fetch(
-        `http://localhost:3000/escrow/${escrowId}`,
+        `https://kara-backend-1.onrender.com/escrow/${escrowId}`,
         {
           method: "PATCH",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           credentials: "include",
@@ -285,7 +298,7 @@ const Product = () => {
             contractAddress: escrowContract.address,
             status: "held",
           }),
-        },
+        }
       );
       const updateText = await updateResponse.text();
       console.log("Escrow update raw response:", updateText); // Added for debugging
@@ -299,7 +312,7 @@ const Product = () => {
         }
         setIsInitiatingEscrow(false);
         throw new Error(
-          `Failed to update escrow: ${updateData.error || updateText}`,
+          `Failed to update escrow: ${updateData.error || updateText}`
         );
       }
       fetchEscrowTransactions();
@@ -313,10 +326,11 @@ const Product = () => {
       if (err.code === 4001) {
         setError("MetaMask connection rejected by user");
       } else if (
-        err.code === "UNSUPPORTED_OPERATION" && err.operation === "getAddress"
+        err.code === "UNSUPPORTED_OPERATION" &&
+        err.operation === "getAddress"
       ) {
         setError(
-          "MetaMask is not connected or account is unavailable. Please connect MetaMask and try again.",
+          "MetaMask is not connected or account is unavailable. Please connect MetaMask and try again."
         );
       } else {
         setError(err.message || "Failed to initiate escrow");
@@ -347,7 +361,7 @@ const Product = () => {
       const escrowContract = new ethers.Contract(
         escrow.contractAddress,
         EscrowArtifact.abi,
-        signer,
+        signer
       );
 
       const callerAddress = await signer.getAddress();
@@ -364,15 +378,15 @@ const Product = () => {
       console.log("Release transaction confirmed:", tx.hash);
 
       const backendResponse = await fetch(
-        `http://localhost:3000/escrow/release/${escrow.id}`,
+        `https://kara-backend-1.onrender.com/escrow/release/${escrow.id}`,
         {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           credentials: "include",
-        },
+        }
       );
       const backendText = await backendResponse.text();
       console.log("Release backend response:", backendText);
@@ -414,7 +428,7 @@ const Product = () => {
       const escrowContract = new ethers.Contract(
         escrow.contractAddress,
         EscrowArtifact.abi,
-        signer,
+        signer
       );
 
       const callerAddress = await signer.getAddress();
@@ -430,15 +444,15 @@ const Product = () => {
       console.log("Refund transaction confirmed:", tx.hash);
 
       const backendResponse = await fetch(
-        `http://localhost:3000/escrow/refund/${escrow.id}`,
+        `https://kara-backend-1.onrender.com/escrow/refund/${escrow.id}`,
         {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           credentials: "include",
-        },
+        }
       );
       const backendText = await backendResponse.text();
       console.log("Refund backend response:", backendText);
@@ -462,7 +476,7 @@ const Product = () => {
     const normalizedPath = imagePath.toLowerCase().startsWith("/uploads/")
       ? imagePath
       : `/Uploads/${imagePath}`;
-    const url = `http://localhost:3000${normalizedPath}`;
+    const url = `https://kara-backend-1.onrender.com${normalizedPath}`;
     console.log("Attempting to fetch image:", url);
     return url;
   };
@@ -492,24 +506,22 @@ const Product = () => {
             <FaArrowLeft size={20} />
           </button>
           <div className="w-2/3">
-            {product.generalImage
-              ? (
-                <img
-                  src={getImageUrl(product.generalImage)}
-                  alt={product.name}
-                  className="w-full h-[400px] object-cover rounded-lg"
-                  onError={(e) => {
-                    console.error("Image load error:", e);
-                    e.target.src =
-                      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==";
-                  }}
-                />
-              )
-              : (
-                <div className="w-full h-[400px] bg-gray-200 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500">No Image</span>
-                </div>
-              )}
+            {product.generalImage ? (
+              <img
+                src={getImageUrl(product.generalImage)}
+                alt={product.name}
+                className="w-full h-[400px] object-cover rounded-lg"
+                onError={(e) => {
+                  console.error("Image load error:", e);
+                  e.target.src =
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==";
+                }}
+              />
+            ) : (
+              <div className="w-full h-[400px] bg-gray-200 rounded-lg flex items-center justify-center">
+                <span className="text-gray-500">No Image</span>
+              </div>
+            )}
             <div className="p-4 rounded-lg">
               <p className="text-gray-600 mt-1">{product.shortDescription}</p>
             </div>
@@ -517,20 +529,20 @@ const Product = () => {
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 Transaction History
               </h3>
-              {escrowTransactions.length > 0
-                ? (
-                  <ul className="space-y-2 text-gray-600">
-                    {escrowTransactions.map((tx) => (
-                      <li key={tx._id}>
-                        {tx.status === "released" ? "Sold" : "Refunded"}{" "}
-                        {tx.amount} {tx.paymentToken} -{" "}
-                        {new Date(tx.updatedAt).toLocaleString()} (Tx:{" "}
-                        {tx.contractAddress.slice(0, 6)}...)
-                      </li>
-                    ))}
-                  </ul>
-                )
-                : <p>No settled transactions yet.</p>}
+              {escrowTransactions.length > 0 ? (
+                <ul className="space-y-2 text-gray-600">
+                  {escrowTransactions.map((tx) => (
+                    <li key={tx._id}>
+                      {tx.status === "released" ? "Sold" : "Refunded"}{" "}
+                      {tx.amount} {tx.paymentToken} -{" "}
+                      {new Date(tx.updatedAt).toLocaleString()} (Tx:{" "}
+                      {tx.contractAddress.slice(0, 6)}...)
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No settled transactions yet.</p>
+              )}
             </div>
           </div>
           <div className="w-1/3 p-6 flex flex-col justify-between">
@@ -556,7 +568,8 @@ const Product = () => {
                   onClick={() =>
                     setQuantity((prev) =>
                       Math.min(product.amount || Infinity, prev + 1)
-                    )}
+                    )
+                  }
                   className="px-3 py-1 bg-gray-300 text-black rounded cursor-pointer"
                 >
                   +
@@ -599,14 +612,12 @@ const Product = () => {
                   // </button>
                 )}
 
-                {
-                  /* <button
+                {/* <button
                   onClick={() => setChatOpen(true)}
                   className="bg-gray-300 p-3 rounded-lg cursor-pointer hover:bg-gray-400 transition"
                 >
                   <FaComments size={20} />
-                </button> */
-                }
+                </button> */}
                 <button
                   onClick={addToCart}
                   className="bg-gray-300 p-3 rounded-lg cursor-pointer hover:bg-gray-400 transition"

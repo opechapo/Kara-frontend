@@ -21,8 +21,8 @@ export const ConnectWallet = () => {
       console.log(`Authenticating wallet for address: ${address}`);
       // Fetch nonce
       const nonceResponse = await fetch(
-        `http://localhost:3000/user/nonce/${address}`,
-        { method: "GET" },
+        `https://kara-backend-1.onrender.com/user/nonce/${address}`,
+        { method: "GET" }
       );
       const nonceData = await nonceResponse.json();
       const nonce = nonceData.data.nonce;
@@ -53,16 +53,16 @@ export const ConnectWallet = () => {
 
       // Send to backend - Fixed to send proper format
       const connectResponse = await fetch(
-        "http://localhost:3000/user/connect-wallet",
+        "https://kara-backend-1.onrender.com/user/connect-wallet",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             walletAddress: address,
             signature,
-            message: message, 
+            message: message,
           }),
-        },
+        }
       );
 
       const data = await connectResponse.json();
@@ -106,7 +106,6 @@ export const ConnectWallet = () => {
     }
   }, [isConnected, address, isAuthenticated]);
 
-  
   // Clear error message when connection state changes
   useEffect(() => {
     setErrorMessage("");

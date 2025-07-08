@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AllMyStores = () => {
   const navigate = useNavigate();
   const [stores, setStores] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [editStore, setEditStore] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    slogan: '',
+    name: "",
+    description: "",
+    slogan: "",
     bannerImage: null,
     featuredImage: null,
     logo: null,
@@ -20,24 +20,28 @@ const AllMyStores = () => {
   }, []);
 
   const fetchStores = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet to view your stores.');
+      setError("Please connect your wallet to view your stores.");
       return;
     }
     try {
-      const headers = { 'Authorization': `Bearer ${token}` };
-      const response = await fetch('http://localhost:3000/stores', {
-        headers,
-        credentials: 'include',
-      });
-      console.log('AllMyStores: Response status:', response.status);
+      const headers = { Authorization: `Bearer ${token}` };
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/stores",
+        {
+          headers,
+          credentials: "include",
+        }
+      );
+      console.log("AllMyStores: Response status:", response.status);
       const data = await response.json();
-      console.log('AllMyStores: Stores data:', data);
-      if (!response.ok) throw new Error(data.message || 'Failed to fetch stores');
+      console.log("AllMyStores: Stores data:", data);
+      if (!response.ok)
+        throw new Error(data.message || "Failed to fetch stores");
       setStores(data);
     } catch (err) {
-      console.error('AllMyStores: Fetch error:', err.message);
+      console.error("AllMyStores: Fetch error:", err.message);
       setError(err.message);
     }
   };
@@ -66,54 +70,70 @@ const AllMyStores = () => {
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token || !editStore) return;
 
     const updateData = new FormData();
-    updateData.append('name', formData.name);
-    updateData.append('description', formData.description);
-    updateData.append('slogan', formData.slogan);
-    if (formData.bannerImage) updateData.append('bannerImage', formData.bannerImage);
-    if (formData.featuredImage) updateData.append('featuredImage', formData.featuredImage);
-    if (formData.logo) updateData.append('logo', formData.logo);
+    updateData.append("name", formData.name);
+    updateData.append("description", formData.description);
+    updateData.append("slogan", formData.slogan);
+    if (formData.bannerImage)
+      updateData.append("bannerImage", formData.bannerImage);
+    if (formData.featuredImage)
+      updateData.append("featuredImage", formData.featuredImage);
+    if (formData.logo) updateData.append("logo", formData.logo);
 
     try {
-      const response = await fetch(`http://localhost:3000/stores/${editStore._id}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-        body: updateData,
-      });
-      console.log('AllMyStores: Update response status:', response.status);
+      const response = await fetch(
+        `https://kara-backend-1.onrender.com/stores/${editStore._id}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+          body: updateData,
+        }
+      );
+      console.log("AllMyStores: Update response status:", response.status);
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to update store');
-      setStores(stores.map(s => (s._id === editStore._id ? data : s)));
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update store");
+      setStores(stores.map((s) => (s._id === editStore._id ? data : s)));
       setEditStore(null);
-      setFormData({ name: '', description: '', slogan: '', bannerImage: null, featuredImage: null, logo: null });
+      setFormData({
+        name: "",
+        description: "",
+        slogan: "",
+        bannerImage: null,
+        featuredImage: null,
+        logo: null,
+      });
     } catch (err) {
-      console.error('AllMyStores: Update error:', err.message);
+      console.error("AllMyStores: Update error:", err.message);
       setError(err.message);
     }
   };
 
   const handleDelete = async (storeId) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/stores/${storeId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
-      console.log('AllMyStores: Delete response status:', response.status);
+      const response = await fetch(
+        `https://kara-backend-1.onrender.com/stores/${storeId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
+      console.log("AllMyStores: Delete response status:", response.status);
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || 'Failed to delete store');
+        throw new Error(errorText || "Failed to delete store");
       }
-      setStores(stores.filter(s => s._id !== storeId));
+      setStores(stores.filter((s) => s._id !== storeId));
     } catch (err) {
-      console.error('AllMyStores: Delete error:', err.message);
+      console.error("AllMyStores: Delete error:", err.message);
       setError(err.message);
     }
   };
@@ -121,9 +141,9 @@ const AllMyStores = () => {
   // Helper function to normalize image paths
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
-    return imagePath.startsWith('/uploads/')
-      ? `http://localhost:3000${imagePath}`
-      : `http://localhost:3000/uploads/${imagePath}`;
+    return imagePath.startsWith("/uploads/")
+      ? `https://kara-backend-1.onrender.com/${imagePath}`
+      : `https://kara-backend-1.onrender.com/uploads/${imagePath}`;
   };
 
   return (
@@ -133,7 +153,9 @@ const AllMyStores = () => {
 
       {editStore ? (
         <div className="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-semibold mb-4">Update Store: {editStore.name}</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Update Store: {editStore.name}
+          </h2>
           <form onSubmit={handleUpdateSubmit} encType="multipart/form-data">
             <div className="mb-4">
               <label className="block text-gray-700">Name</label>
@@ -168,18 +190,36 @@ const AllMyStores = () => {
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Banner Image</label>
-              <input type="file" name="bannerImage" onChange={handleFileChange} className="w-full" />
+              <input
+                type="file"
+                name="bannerImage"
+                onChange={handleFileChange}
+                className="w-full"
+              />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Featured Image</label>
-              <input type="file" name="featuredImage" onChange={handleFileChange} className="w-full" />
+              <input
+                type="file"
+                name="featuredImage"
+                onChange={handleFileChange}
+                className="w-full"
+              />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Logo</label>
-              <input type="file" name="logo" onChange={handleFileChange} className="w-full" />
+              <input
+                type="file"
+                name="logo"
+                onChange={handleFileChange}
+                className="w-full"
+              />
             </div>
             <div className="flex space-x-4">
-              <button type="submit" className="bg-purple-900 text-white px-4 py-2 rounded hover:bg-purple-700">
+              <button
+                type="submit"
+                className="bg-purple-900 text-white px-4 py-2 rounded hover:bg-purple-700"
+              >
                 Save Changes
               </button>
               <button
@@ -195,8 +235,11 @@ const AllMyStores = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {stores.length > 0 ? (
-            stores.map(store => (
-              <div key={store._id} className="bg-white p-4 rounded-lg shadow-md">
+            stores.map((store) => (
+              <div
+                key={store._id}
+                className="bg-white p-4 rounded-lg shadow-md"
+              >
                 <h3 className="text-lg font-semibold">{store.name}</h3>
                 <p className="text-gray-600">{store.description}</p>
                 <p className="text-gray-500 italic">{store.slogan}</p>
@@ -205,7 +248,12 @@ const AllMyStores = () => {
                     src={getImageUrl(store.bannerImage)}
                     alt="Banner"
                     className="mt-2 w-full h-32 object-cover"
-                    onError={(e) => console.error('Store banner image load error:', store.bannerImage)}
+                    onError={(e) =>
+                      console.error(
+                        "Store banner image load error:",
+                        store.bannerImage
+                      )
+                    }
                   />
                 )}
                 {store.featuredImage && (
@@ -213,7 +261,12 @@ const AllMyStores = () => {
                     src={getImageUrl(store.featuredImage)}
                     alt="Featured"
                     className="mt-2 w-full h-32 object-cover"
-                    onError={(e) => console.error('Store featured image load error:', store.featuredImage)}
+                    onError={(e) =>
+                      console.error(
+                        "Store featured image load error:",
+                        store.featuredImage
+                      )
+                    }
                   />
                 )}
                 {store.logo && (
@@ -221,7 +274,9 @@ const AllMyStores = () => {
                     src={getImageUrl(store.logo)}
                     alt="Logo"
                     className="mt-2 w-16 h-16 object-cover"
-                    onError={(e) => console.error('Store logo image load error:', store.logo)}
+                    onError={(e) =>
+                      console.error("Store logo image load error:", store.logo)
+                    }
                   />
                 )}
                 <div className="mt-4 flex space-x-2">

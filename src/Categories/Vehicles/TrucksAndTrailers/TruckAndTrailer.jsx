@@ -11,8 +11,6 @@ import toyotaTrailer from "../../../assets/toyotaTrailer.webp";
 import manTruck from "../../../assets/manTruck.webp";
 import mackTrailer from "../../../assets/mackTrailer.webp";
 
-
-
 const TruckAndTrailerLogo = [
   { name: "Toyota", logo: toyotaLogo, link: "#" },
   { name: "Man", logo: manLogo, link: "#" },
@@ -54,8 +52,6 @@ const truckforSale = [
     link: "/mackAnthem",
   },
 ];
-
-
 
 const TruckAndTrailer = () => {
   const navigate = useNavigate();
@@ -117,10 +113,11 @@ const TruckAndTrailer = () => {
                   />
                 </div>
 
-
                 {/* truck Details */}
                 <div className="bg-white p-3 ">
-                  <p className="text-lg font-bold text-blue-600">{truck.price}</p>
+                  <p className="text-lg font-bold text-blue-600">
+                    {truck.price}
+                  </p>
                   <p className="text-gray-800 font-semibold">{truck.brand}</p>
                   <p className="text-gray-600 text-sm">{truck.description}</p>
                   <p className="text-gray-500 text-xs mt-2">

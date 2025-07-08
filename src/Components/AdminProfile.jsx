@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from '../Layouts/Header';
-import Footer from '../Layouts/Footer';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "../Layouts/Header";
+import Footer from "../Layouts/Footer";
 
 const AdminProfile = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [users, setUsers] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -15,32 +15,46 @@ const AdminProfile = () => {
   }, []);
 
   const fetchAdminData = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please connect your wallet.');
+      setError("Please connect your wallet.");
       setIsLoading(false);
       return;
     }
     try {
-      const headers = { 'Authorization': `Bearer ${token}` };
+      const headers = { Authorization: `Bearer ${token}` };
 
       // Fetch all notifications
-      const notificationsResponse = await fetch('http://localhost:3000/notifications/all', { headers, credentials: 'include' });
+      const notificationsResponse = await fetch(
+        "https://kara-backend-1.onrender.com/notifications/all",
+        { headers, credentials: "include" }
+      );
       const notificationsResult = await notificationsResponse.json();
-      if (!notificationsResponse.ok) throw new Error(notificationsResult.message || 'Failed to fetch notifications');
+      if (!notificationsResponse.ok)
+        throw new Error(
+          notificationsResult.message || "Failed to fetch notifications"
+        );
 
       // Fetch all users
-      const usersResponse = await fetch('http://localhost:3000/users/all', { headers, credentials: 'include' });
+      const usersResponse = await fetch(
+        "https://kara-backend-1.onrender.com/users/all",
+        { headers, credentials: "include" }
+      );
       const usersResult = await usersResponse.json();
-      if (!usersResponse.ok) throw new Error(usersResult.message || 'Failed to fetch users');
+      if (!usersResponse.ok)
+        throw new Error(usersResult.message || "Failed to fetch users");
 
-      setNotifications(notificationsResult.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+      setNotifications(
+        notificationsResult.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
+      );
       setUsers(usersResult.data);
       setIsLoading(false);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
-      if (err.message.includes('Admin access')) navigate('/profile'); // Redirect non-admins
+      if (err.message.includes("Admin access")) navigate("/profile"); // Redirect non-admins
     }
   };
 
@@ -63,12 +77,17 @@ const AdminProfile = () => {
                 {notifications.map((notification) => (
                   <li key={notification._id} className="border-b py-2">
                     <p className="font-semibold">
-                      {notification.user?.walletAddress 
-                        ? `${notification.user.walletAddress.slice(0, 6)}...${notification.user.walletAddress.slice(-4)}` 
-                        : 'Unknown Wallet'}
+                      {notification.user?.walletAddress
+                        ? `${notification.user.walletAddress.slice(
+                            0,
+                            6
+                          )}...${notification.user.walletAddress.slice(-4)}`
+                        : "Unknown Wallet"}
                     </p>
                     <p>{notification.message}</p>
-                    <p className="text-sm text-gray-500">{new Date(notification.createdAt).toLocaleString()}</p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(notification.createdAt).toLocaleString()}
+                    </p>
                   </li>
                 ))}
               </ul>

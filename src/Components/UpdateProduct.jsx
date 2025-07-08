@@ -38,7 +38,7 @@ const UpdateProduct = () => {
     }
     try {
       const response = await fetch(
-        `http://localhost:3000/products/${productId}`,
+        `https://kara-backend-1.onrender.com/products/${productId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           credentials: "include",
@@ -72,7 +72,7 @@ const UpdateProduct = () => {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `http://localhost:3000/collections/store/${storeId}`,
+        `https://kara-backend-1.onrender.com/collections/store/${storeId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           credentials: "include",
@@ -119,7 +119,7 @@ const UpdateProduct = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/products/${productId}`,
+        `https://kara-backend-1.onrender.com/products/${productId}`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },

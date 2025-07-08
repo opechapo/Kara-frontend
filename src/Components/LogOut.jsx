@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -11,24 +11,27 @@ const Logout = () => {
       // Disconnect wallet
       if (window.ethereum) {
         await window.ethereum.request({
-          method: 'wallet_requestPermissions',
+          method: "wallet_requestPermissions",
           params: [{ eth_accounts: {} }],
         }); // This resets the connection in MetaMask
       }
 
       // Clear backend token
-      const response = await fetch('http://localhost:3000/user/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/user/logout",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText);
       }
       const data = await response.json();
       setMessage(data.message);
-      setTimeout(() => navigate('/'), 1000); // Redirect to home
+      setTimeout(() => navigate("/"), 1000); // Redirect to home
     } catch (err) {
       setError(err.message);
     }

@@ -29,10 +29,13 @@ const UpdateStore = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:3000/stores/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `https://kara-backend-1.onrender.com/stores/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       if (!response.ok) throw new Error("Failed to fetch store");
       const data = await response.json();
       setFormData({
@@ -76,12 +79,15 @@ const UpdateStore = () => {
     if (formData.logo) form.append("logo", formData.logo);
 
     try {
-      const response = await fetch(`http://localhost:3000/stores/${id}`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: "include",
-        body: form,
-      });
+      const response = await fetch(
+        `https://kara-backend-1.onrender.com/stores/${id}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+          body: form,
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to update store");
@@ -104,11 +110,14 @@ const UpdateStore = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:3000/stores/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `https://kara-backend-1.onrender.com/stores/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to delete store");

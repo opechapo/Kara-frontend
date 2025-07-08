@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from '../Layouts/Header';
-import Footer from '../Layouts/Footer';
-import { FaArrowLeft } from 'react-icons/fa';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "../Layouts/Header";
+import Footer from "../Layouts/Footer";
+import { FaArrowLeft } from "react-icons/fa";
 
 const CreateStore = () => {
   const navigate = useNavigate();
   const [storeData, setStoreData] = useState({
-    name: '',
-    description: '',
-    slogan: '',
+    name: "",
+    description: "",
+    slogan: "",
     bannerImage: null,
     featuredImage: null,
     logo: null,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false); // New state for loading
 
   const handleStoreChange = (e) => {
@@ -31,28 +31,31 @@ const CreateStore = () => {
     e.preventDefault();
     setIsLoading(true); // Set loading state to true
     const formData = new FormData();
-    formData.append('name', storeData.name);
-    formData.append('description', storeData.description);
-    formData.append('slogan', storeData.slogan);
-    formData.append('bannerImage', storeData.bannerImage);
-    formData.append('featuredImage', storeData.featuredImage);
-    formData.append('logo', storeData.logo);
+    formData.append("name", storeData.name);
+    formData.append("description", storeData.description);
+    formData.append("slogan", storeData.slogan);
+    formData.append("bannerImage", storeData.bannerImage);
+    formData.append("featuredImage", storeData.featuredImage);
+    formData.append("logo", storeData.logo);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/stores', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token || ''}` },
-        credentials: 'include',
-        body: formData,
-      });
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/stores",
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token || ""}` },
+          credentials: "include",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || 'Failed to create store');
+        throw new Error(errorText || "Failed to create store");
       }
 
-      navigate('/profile');
+      navigate("/profile");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -71,7 +74,7 @@ const CreateStore = () => {
       {/* Back Button in Outer Div */}
       <div className="absolute top-28 left-6">
         <button
-          onClick={() => navigate('/profile')}
+          onClick={() => navigate("/profile")}
           className="flex items-center text-purple-900 hover:text-purple-700 transition-colors"
         >
           <FaArrowLeft className="mr-2" />
@@ -80,7 +83,9 @@ const CreateStore = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-10 max-w-6xl mx-auto bg-gray-50 rounded-xl shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Create a Store</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">
+          Create a Store
+        </h1>
         {error && <div className="text-red-500 mb-8">{error}</div>}
 
         <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -113,7 +118,9 @@ const CreateStore = () => {
           </div>
 
           <div className="mb-8">
-            <label className="block text-gray-700 font-medium mb-3">Slogan</label>
+            <label className="block text-gray-700 font-medium mb-3">
+              Slogan
+            </label>
             <input
               type="text"
               name="slogan"
@@ -192,7 +199,7 @@ const CreateStore = () => {
                 Creating...
               </>
             ) : (
-              'Create Store'
+              "Create Store"
             )}
           </button>
         </form>

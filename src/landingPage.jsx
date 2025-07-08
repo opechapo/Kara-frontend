@@ -36,7 +36,7 @@ const LandingPage = () => {
   const [homeGardenIndex, setHomeGardenIndex] = useState(0);
   const { fetchCartCount, fetchNotificationCount } = useAuth();
 
-  const API_BASE_URL = "http://localhost:3000";
+  const API_BASE_URL = "https://kara-backend-1.onrender.com";
   const POLLING_INTERVAL = 30000;
 
   const getImageUrl = (path) => {

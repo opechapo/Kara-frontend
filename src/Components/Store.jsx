@@ -35,10 +35,13 @@ const Store = () => {
       return;
     }
     try {
-      const userResponse = await fetch("http://localhost:3000/user/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: "include",
-      });
+      const userResponse = await fetch(
+        "https://kara-backend-1.onrender.com/user/profile",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       if (!userResponse.ok) {
         throw new Error("Failed to fetch user profile");
       }
@@ -49,7 +52,7 @@ const Store = () => {
       }
 
       const storeResponse = await fetch(
-        `http://localhost:3000/stores/public/${id}`,
+        `https://kara-backend-1.onrender.com/stores/public/${id}`,
         {
           credentials: "include",
         }
@@ -75,7 +78,7 @@ const Store = () => {
   const fetchStore = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/stores/public/${id}`,
+        `https://kara-backend-1.onrender.com/stores/public/${id}`,
         {
           credentials: "include",
         }
@@ -94,7 +97,7 @@ const Store = () => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const response = await fetch(
-        `http://localhost:3000/products?storeId=${id}`,
+        `https://kara-backend-1.onrender.com/products?storeId=${id}`,
         {
           headers,
           credentials: "include",
@@ -115,7 +118,7 @@ const Store = () => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const response = await fetch(
-        `http://localhost:3000/collections/store/${id}`,
+        `https://kara-backend-1.onrender.com/collections/store/${id}`,
         {
           headers,
           credentials: "include",
@@ -149,7 +152,7 @@ const Store = () => {
     if (!imagePath) {
       return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==";
     }
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://kara-backend-1.onrender.com";
     // Normalize path to lowercase /uploads/ and encode
     const normalizedPath = imagePath.toLowerCase().startsWith("/uploads/")
       ? imagePath.toLowerCase()

@@ -33,7 +33,7 @@ const UpdateCollection = () => {
     }
     try {
       const response = await fetch(
-        `http://localhost:3000/collections/${collectionId}`,
+        `https://kara-backend-1.onrender.com/collections/${collectionId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           credentials: "include",
@@ -68,10 +68,13 @@ const UpdateCollection = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3000/stores", {
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://kara-backend-1.onrender.com/stores",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
       const text = await response.text();
       console.log("UpdateCollection: Fetch stores raw response:", text);
       const data = JSON.parse(text);
@@ -113,7 +116,7 @@ const UpdateCollection = () => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Please connect your wallet.");
       const response = await fetch(
-        `http://localhost:3000/collections/${collectionId}`,
+        `https://kara-backend-1.onrender.com/collections/${collectionId}`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },
@@ -144,7 +147,7 @@ const UpdateCollection = () => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Please connect your wallet.");
       const response = await fetch(
-        `http://localhost:3000/collections/${collectionId}`,
+        `https://kara-backend-1.onrender.com/collections/${collectionId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
