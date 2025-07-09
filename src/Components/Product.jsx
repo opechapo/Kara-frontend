@@ -373,7 +373,7 @@ const Product = () => {
       }
 
       console.log("Calling release on contract:", escrowContract.address);
-      const tx = await escrowContract.release({ gasLimit: 100000 });
+      const tx = await escrowContract.release({}); //gasLimit: 100000
       await tx.wait();
       console.log("Release transaction confirmed:", tx.hash);
 
