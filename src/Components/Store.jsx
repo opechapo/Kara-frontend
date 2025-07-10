@@ -234,7 +234,7 @@ const Store = () => {
         ) : (
           <>
             <div className="relative w-full h-64 bg-gray-200">
-              {store.bannerImage && !imageErrors.banner ? (
+              {store.bannerImage ? (
                 <img
                   src={store.bannerImage}
                   alt="Store Banner"
@@ -256,7 +256,7 @@ const Store = () => {
                 </div>
               )}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
-                {store.logo && !imageErrors.logo ? (
+                {store.logo ? (
                   <img
                     src={store.logo}
                     alt="Store Logo"
