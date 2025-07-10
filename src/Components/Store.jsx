@@ -236,7 +236,7 @@ const Store = () => {
             <div className="relative w-full h-64 bg-gray-200">
               {store.bannerImage && !imageErrors.banner ? (
                 <img
-                  src={getImageUrl(store.bannerImage)}
+                  src={store.bannerImage}
                   alt="Store Banner"
                   className="w-full h-full object-cover"
                   crossOrigin="anonymous"
@@ -258,7 +258,7 @@ const Store = () => {
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
                 {store.logo && !imageErrors.logo ? (
                   <img
-                    src={getImageUrl(store.logo)}
+                    src={store.logo}
                     alt="Store Logo"
                     className="w-44 h-44 rounded-full border-4 border-white object-cover"
                     crossOrigin="anonymous"
@@ -318,7 +318,7 @@ const Store = () => {
                           {collection.generalImage &&
                           !imageErrors.products[collection._id] ? (
                             <img
-                              src={getImageUrl(collection.generalImage)}
+                              src={collection.generalImage}
                               alt={`${collection.name} Image`}
                               className="w-24 h-24 object-cover rounded-md transition-transform group-hover:scale-105"
                               crossOrigin="anonymous"
@@ -364,7 +364,7 @@ const Store = () => {
                           {product.generalImage &&
                           !imageErrors.products[product._id] ? (
                             <img
-                              src={getImageUrl(product.generalImage)}
+                              src={product.generalImage}
                               alt={product.name}
                               className="w-24 h-24 object-cover rounded-md transition-transform group-hover:scale-105 mb-2"
                               crossOrigin="anonymous"

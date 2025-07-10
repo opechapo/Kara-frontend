@@ -508,7 +508,7 @@ const Product = () => {
           <div className="w-2/3">
             {product.generalImage ? (
               <img
-                src={getImageUrl(product.generalImage)}
+                src={product.generalImage}
                 alt={product.name}
                 className="w-full h-[400px] object-cover rounded-lg"
                 onError={(e) => {
