@@ -363,7 +363,7 @@ const LandingPage = () => {
                   >
                     <div className="w-60 h-60 bg-gray-100 rounded-lg overflow-hidden">
                       <img
-                        src={getImageUrl(item.generalImage)}
+                        src={item.generalImage}
                         alt={item.name || "Product image"}
                         className="w-full h-full object-cover"
                       />
@@ -518,7 +518,7 @@ const LandingPage = () => {
                   >
                     <div className="w-60 h-60 bg-gray-100 rounded-lg overflow-hidden">
                       <img
-                        src={getImageUrl(item.generalImage)}
+                        src={item.generalImage}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />
