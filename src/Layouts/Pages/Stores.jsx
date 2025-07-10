@@ -92,7 +92,7 @@ const Stores = () => {
                 <div className="flex flex-col items-center">
                   {store.logo ? (
                     <img
-                      src={getImageUrl(store.logo)}
+                      src={store.logo}
                       alt={`${store.name} Logo`}
                       className="w-24 h-24 object-cover rounded-md transition-transform group-hover:scale-105"
                       onError={(e) => {
