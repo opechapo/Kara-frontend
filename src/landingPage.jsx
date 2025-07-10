@@ -295,7 +295,8 @@ const LandingPage = () => {
       {stores.length > 0 ? (
         <section className="relative w-full h-screen">
           <img
-            src={getImageUrl(stores[currentIndex]?.bannerImage)}
+            src={stores[currentIndex]?.bannerImage}
+            //getImageUrl
             alt={stores[currentIndex]?.name || "Store"}
             className="w-full h-full object-cover"
             onError={(e) => {
