@@ -91,7 +91,7 @@ const Collections = () => {
                 <div className="flex flex-col items-center">
                   {collection.generalImage ? (
                     <img
-                      src={getImageUrl(collection.generalImage)}
+                      src={collection.generalImage}
                       alt={`${collection.name} Image`}
                       className="w-24 h-24 object-cover rounded-md transition-transform group-hover:scale-105"
                       onError={(e) => {
