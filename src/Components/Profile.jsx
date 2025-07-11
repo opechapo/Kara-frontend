@@ -663,9 +663,7 @@ const Profile = () => {
                       <div className="flex flex-col items-center">
                         {collection.generalImage ? (
                           <img
-                            src={`https://kara-backend-1.onrender.com${
-                              collection.generalImage
-                            }?t=${Date.now()}`}
+                            src={collection.generalImage}
                             alt={`${collection.name} Image`}
                             className="w-24 h-24 object-cover rounded-md transition-transform group-hover:scale-105"
                             onError={(e) => {
